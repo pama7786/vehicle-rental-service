@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite3"
+  url      = env("DATABASE_URL")
+}
+
+// schema.prisma
+
+model User {
+  id           Int            @id @default(autoincrement())
+  username     String         @unique
+  password     String
+  isAdmin      Boolean        @default(false)
+  // Add other user fields as needed
+  Availability Availability[]
+}
+
+model Vehicle {
+  id           Int            @id @default(autoincrement())
+  name         String
+  model        String
+  // Add other vehicle fields as needed
+  Availability Availability[]
+}
+
+model Availability {
+  id        Int      @id @default(autoincrement())
+  vehicleId Int
+  startTime DateTime
+  endTime   DateTime
+  userId    Int?
+
+  vehicle  Vehicle   @relation(fields: [vehicleId], references: [id])
+  user     User?     @relation(fields: [userId], references: [id])
+  bookings Booking[]
+}
+
+model Booking {
+  id             Int       @id @default(autoincrement())
+  availabilityId Int
+  returnTime     DateTime?
+  // Add other booking fields as needed
+
+  availability Availability @relation(fields: [availabilityId], references: [id])
+}
