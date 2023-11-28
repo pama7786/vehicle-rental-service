@@ -1,5 +1,5 @@
 // Import server here and start the application
-import server from "./api/server.js";
+import server from "./api/Server.js";
 
 const port = 3000
 

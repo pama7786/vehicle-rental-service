@@ -6,46 +6,47 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite3"
+  provider = "postgres"
   url      = env("DATABASE_URL")
 }
 
 // schema.prisma
 
 model User {
-  id           Int            @id @default(autoincrement())
-  username     String         @unique
-  password     String
-  isAdmin      Boolean        @default(false)
-  // Add other user fields as needed
-  Availability Availability[]
+  id       Int       @id @default(autoincrement())
+  name     String
+  email    String    @unique
+  password String
+  booking  Booking[]
+}
+
+model Admin {
+  id       Int       @id @default(autoincrement())
+  name     String
+  email    String    @unique
+  password String
+  vehicle  Vehicle[]
 }
 
 model Vehicle {
-  id           Int            @id @default(autoincrement())
-  name         String
+  id           Int       @id @default(autoincrement())
+  image        String
+  type         String
+  rent         Float
   model        String
-  // Add other vehicle fields as needed
-  Availability Availability[]
-}
-
-model Availability {
-  id        Int      @id @default(autoincrement())
-  vehicleId Int
-  startTime DateTime
-  endTime   DateTime
-  userId    Int?
-
-  vehicle  Vehicle   @relation(fields: [vehicleId], references: [id])
-  user     User?     @relation(fields: [userId], references: [id])
-  bookings Booking[]
+  schudule     String
+  adminId      Int
+  availability Boolean
+  booking      Booking[]
+  Admin        Admin     @relation(fields: [adminId], references: [id])
 }
 
 model Booking {
-  id             Int       @id @default(autoincrement())
-  availabilityId Int
-  returnTime     DateTime?
-  // Add other booking fields as needed
-
-  availability Availability @relation(fields: [availabilityId], references: [id])
+  id         Int      @id @default(autoincrement())
+  startDate  DateTime
+  returnDate DateTime
+  userId     Int
+  vehicleId Int
+  User      User     @relation(fields: [userId], references: [id])
+  Vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
 }
